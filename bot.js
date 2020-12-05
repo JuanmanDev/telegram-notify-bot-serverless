@@ -1,6 +1,8 @@
 const { Telegraf } = require('telegraf');
 const DynamoDBSession = require('telegraf-session-dynamodb')
 
+const { CallbackData } = require('telegraf-callback-data');
+
 const { Keyboard, Key } = require('telegram-keyboard')
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
@@ -12,6 +14,13 @@ const dynamoDBSession = new DynamoDBSession({
         region: process.env.AWS_REGION
     }
 })
+
+const CALLBACK_TYPE_BEFORE = 'before';
+const CALLBACK_TYPE_SELECT = 'this';
+const CALLBACK_TYPE_AFTER  = 'after';
+const CALLBACK_TYPE_EXIT   = 'exit';
+
+const framesCD = new CallbackData('frames', ['type']);
 
 
 bot.use(dynamoDBSession.middleware())
@@ -44,12 +53,12 @@ bot.command('ping', (ctx) => {
 bot.command('guess', async ({ reply, replyWithPhoto }) => {
     const keyboard = Keyboard.make([
         [
-            Key.callback('⏪', 'action1'),
-            Key.callback(' ☑ ', 'action2'),
-            Key.callback('⏩', 'action3'),
+            Key.callback(' ⏪ ',  framesCD.new({ type: CALLBACK_TYPE_BEFORE })),
+            Key.callback(' ☑ ',   framesCD.new({ type: CALLBACK_TYPE_SELECT })),
+            Key.callback(' ⏩ ',  framesCD.new({ type: CALLBACK_TYPE_AFTER  })),
         ],
         [
-            Key.callback('Exit', 'exit'),
+            Key.callback('Exit', 'exit'), // TODO EXIT
         ],
       ]);
   
@@ -58,7 +67,23 @@ bot.command('guess', async ({ reply, replyWithPhoto }) => {
         ...keyboard.reply(), 
         ...keyboard.inline(),
     });
-  })
+});
+
+bot.action(framesCD.filter({ type: CALLBACK_TYPE_BEFORE }), ({ answerCbQuery }) => {
+    return answerCbQuery('Hello ' + CALLBACK_TYPE_BEFORE);
+});
+
+bot.action(framesCD.filter({ type: CALLBACK_TYPE_SELECT }), ({ answerCbQuery }) => {
+    return answerCbQuery('Hello ' + CALLBACK_TYPE_SELECT);
+});
+
+bot.action(framesCD.filter({ type: CALLBACK_TYPE_AFTER }), ({ answerCbQuery }) => {
+    return answerCbQuery('Hello ' + CALLBACK_TYPE_AFTER);
+});
+
+bot.action(framesCD.filter({ type: CALLBACK_TYPE_EXIT }), ({ answerCbQuery }) => {
+    return answerCbQuery('Hello ' + CALLBACK_TYPE_EXIT);
+});
 
 bot.on('text', (ctx) => {
     return ctx.reply(ctx.message.text);
