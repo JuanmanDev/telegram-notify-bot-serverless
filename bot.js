@@ -1,11 +1,27 @@
 const { Telegraf } = require('telegraf');
 const DynamoDBSession = require('telegraf-session-dynamodb')
-
-const { CallbackData } = require('telegraf-callback-data');
-
 const { Keyboard, Key } = require('telegram-keyboard');
 
-const { welcomeMessage, helpMessage, cleanMessage } = require("./messages");
+const {
+    welcomeMessage,
+    helpMessage,
+    cleanMessage,
+    guessStartMessage,
+    guessFinishMessage,
+    guessButtonExitMessage,
+    unkownNameUserMessagePart,
+} = require("./messages");
+
+const {
+    CALLBACK_TYPE_BEFORE_ACTION,
+    CALLBACK_TYPE_SELECT_ACTION,
+    CALLBACK_TYPE_AFTER_ACTION,
+    CALLBACK_TYPE_EXIT_ACTION,
+    CALLBACK_TYPE_BEFORE_NAME,
+    CALLBACK_TYPE_SELECT_NAME,
+    CALLBACK_TYPE_AFTER_NAME,
+    CALLBACK_TYPE_EXIT_NAME,
+} = require("./framesCD");
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -23,15 +39,10 @@ const FIRST_FRAME = 0;
 const LAST_FRAME = 61696;
 const URL_FRAMES = 'https://framex-dev.wadrid.net/api/video/Falcon%20Heavy%20Test%20Flight%20(Hosted%20Webcast)-wbSwFU6tY1c/frame/';
 
-const CALLBACK_TYPE_BEFORE = 'before';
-const CALLBACK_TYPE_SELECT = 'this';
-const CALLBACK_TYPE_AFTER  = 'after';
-const CALLBACK_TYPE_EXIT   = 'exit';
-
-const framesCD = new CallbackData('frames', ['type']);
 
 bot.start((ctx) => {
-    return ctx.reply(welcomeMessage.replace("{{name}}", ctx.from.first_name ? ctx.from.first_name : 'friend'));
+    return ctx.reply(welcomeMessage.replace("{{name}}",
+     ctx.from.first_name ? ctx.from.first_name : unkownNameUserMessagePart));
 });
 
 bot.help((ctx) => {
@@ -78,12 +89,12 @@ async function askForFrame({ reply, replyWithPhoto, session }) {
     }
     const keyboard = Keyboard.make([
         [
-            Key.callback(' ⏪ ',  framesCD.new({ type: CALLBACK_TYPE_BEFORE })),
-            Key.callback(' ☑ ',   framesCD.new({ type: CALLBACK_TYPE_SELECT })),
-            Key.callback(' ⏩ ',  framesCD.new({ type: CALLBACK_TYPE_AFTER  })),
+            Key.callback(' ⏪ ', CALLBACK_TYPE_BEFORE_ACTION),
+            Key.callback(' ☑ ',  CALLBACK_TYPE_SELECT_ACTION),
+            Key.callback(' ⏩ ', CALLBACK_TYPE_AFTER_ACTION),
         ],
         [
-            Key.callback(guessButtonExitMessage,  framesCD.new({ type: CALLBACK_TYPE_EXIT  })),
+            Key.callback(guessButtonExitMessage, CALLBACK_TYPE_EXIT_ACTION),
         ],
       ]);
       
@@ -94,24 +105,22 @@ async function askForFrame({ reply, replyWithPhoto, session }) {
     });
 }
 
-bot.action(framesCD.filter({ type: CALLBACK_TYPE_BEFORE }), async (ctx) => {
+bot.action(CALLBACK_TYPE_BEFORE_NAME, async (ctx) => {
     ctx.session.lastFrame = ctx.session.currentFrame;
     await askForFrame(ctx);
 });
 
-bot.action(framesCD.filter({ type: CALLBACK_TYPE_SELECT }), async (ctx) => {
+bot.action(CALLBACK_TYPE_SELECT_NAME, async (ctx) => {
     ctx.session.currentFrame = ctx.session.lastFrame;
     await askForFrame(ctx);
 });
 
-bot.action(framesCD.filter({ type: CALLBACK_TYPE_AFTER }), async (ctx) => {
+bot.action(CALLBACK_TYPE_AFTER_NAME, async (ctx) => {
     ctx.session.firstFrame = ctx.session.currentFrame + 1;
     await askForFrame(ctx);
 });
 
-bot.action(framesCD.filter({ type: CALLBACK_TYPE_EXIT }), ({ answerCbQuery }) => {
-    // return answerCbQuery('Hello ' + CALLBACK_TYPE_EXIT);
-});
+bot.action(CALLBACK_TYPE_EXIT_NAME, () => {});
 
 bot.on('text', (ctx) => {
     return ctx.reply(ctx.message.text);

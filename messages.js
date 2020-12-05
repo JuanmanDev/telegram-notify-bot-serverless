@@ -8,6 +8,9 @@ const helpMessage = `The bot just repeats anything you say in the chat.
     /help - Show this help page`;
 exports.helpMessage = helpMessage;
 
+const unkownNameUserMessagePart = 'friend';
+exports.unkownNameUserMessagePart = unkownNameUserMessagePart;
+
 const welcomeMessage = "Hello from Lambda, {{name}}! Use /help to view available commands.";
 exports.welcomeMessage = welcomeMessage;
 
