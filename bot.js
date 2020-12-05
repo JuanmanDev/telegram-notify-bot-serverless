@@ -1,12 +1,20 @@
 const { Telegraf } = require('telegraf');
-const DynamoDBSession = require('telegraf-session-dynamodb')
+const DynamoDBSession = require('telegraf-session-dynamodb');
+const { Keyboard, Key } = require('telegram-keyboard');
 
 const {
     welcomeMessage,
     helpMessage,
     cleanMessage,
     unkownNameUserMessagePart,
+    startGuessButtonMessage,
 } = require("./messages");
+
+
+const {
+    CALLBACK_TYPE_START_NAME,
+    CALLBACK_TYPE_GUESS_ACTION,
+} = require("./framesCD");
 
 const { connectGuessToBot } = require("./guess");
 
@@ -22,12 +30,18 @@ const dynamoDBSession = new DynamoDBSession({
 });
 bot.use(dynamoDBSession.middleware());
 
-connectGuessToBot(bot);
+connectGuessToBot(bot, startMessageAction);
 
-bot.start((ctx) => {
-    return ctx.reply(welcomeMessage.replace("{{name}}",
-     ctx.from.first_name ? ctx.from.first_name : unkownNameUserMessagePart));
-});
+bot.start(startMessageAction);
+bot.action(CALLBACK_TYPE_START_NAME, startMessageAction);
+
+async function startMessageAction(ctx) {
+    const keyboard = Keyboard.make([Key.callback(startGuessButtonMessage, CALLBACK_TYPE_GUESS_ACTION)]);
+    
+    await ctx.reply(welcomeMessage.replace("{{name}}", ctx.from.first_name ? ctx.from.first_name : unkownNameUserMessagePart), {
+        ...keyboard.inline(),
+    });
+}
 
 bot.help((ctx) => {
     return ctx.replyWithMarkdown(helpMessage);

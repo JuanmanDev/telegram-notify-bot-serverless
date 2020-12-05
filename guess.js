@@ -1,9 +1,13 @@
 const { Keyboard, Key } = require('telegram-keyboard');
+
 const {
     guessStartMessage,
     guessFinishMessage,
-    guessButtonExitMessage
+    guessButtonExitMessage,
+    byeMessage,
+    startGuessButtonMessage,
 } = require("./messages");
+
 const {
     CALLBACK_TYPE_BEFORE_ACTION,
     CALLBACK_TYPE_SELECT_ACTION,
@@ -13,6 +17,8 @@ const {
     CALLBACK_TYPE_SELECT_NAME,
     CALLBACK_TYPE_AFTER_NAME,
     CALLBACK_TYPE_EXIT_NAME,
+    CALLBACK_TYPE_GUESS_ACTION,
+    CALLBACK_TYPE_GUESS_NAME,
 } = require("./framesCD");
 
 
@@ -42,7 +48,6 @@ async function askForFrame({ reply, replyWithPhoto, session }) {
         ],
     ]);
 
-
     await replyWithPhoto(URL_FRAMES + session.currentFrame, {
         ...keyboard.reply(),
         ...keyboard.inline(),
@@ -51,24 +56,16 @@ async function askForFrame({ reply, replyWithPhoto, session }) {
 
 exports.connectGuessToBot = function(bot) {
 
-    bot.command('guess', async (ctx) => {
-        const { reply, replyWithPhoto, session } = ctx;
-
-        await reply(guessStartMessage);
-
-        ctx.session.firstFrame = FIRST_FRAME;
-        ctx.session.lastFrame = LAST_FRAME;
-
-        await askForFrame(ctx);
-    });
+    bot.command('guess', startGuess);
+    bot.action(CALLBACK_TYPE_GUESS_NAME, startGuess);
 
     bot.action(CALLBACK_TYPE_BEFORE_NAME, async (ctx) => {
-        session.firstFrame = session.lastFrame = ctx.session.currentFrame;
+        ctx.session.lastFrame = ctx.session.currentFrame;
         await askForFrame(ctx);
     });
 
     bot.action(CALLBACK_TYPE_SELECT_NAME, async (ctx) => {
-        ctx.session.currentFrame = ctx.session.lastFrame;
+        ctx.session.firstFrame = ctx.session.lastFrame = ctx.session.currentFrame;
         await askForFrame(ctx);
     });
 
@@ -77,5 +74,22 @@ exports.connectGuessToBot = function(bot) {
         await askForFrame(ctx);
     });
 
-    bot.action(CALLBACK_TYPE_EXIT_NAME, () => { });
+    bot.action(CALLBACK_TYPE_EXIT_NAME, async (ctx) => {
+        const keyboard = Keyboard.make([Key.callback(startGuessButtonMessage, CALLBACK_TYPE_GUESS_ACTION)]);
+        
+        await ctx.reply(byeMessage, {
+            ...keyboard.reply(),
+        });
+    });
+}
+
+async function startGuess(ctx) {
+    const { reply } = ctx;
+
+    await reply(guessStartMessage);
+
+    ctx.session.firstFrame = FIRST_FRAME;
+    ctx.session.lastFrame = LAST_FRAME;
+
+    await askForFrame(ctx);
 }

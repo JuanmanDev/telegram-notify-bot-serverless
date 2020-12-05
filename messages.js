@@ -29,3 +29,9 @@ exports.guessFinishMessage = guessFinishMessage;
 
 const guessButtonExitMessage = " EXIT ";
 exports.guessButtonExitMessage = guessButtonExitMessage;
+
+const byeMessage = " Bye! 👋 ";
+exports.byeMessage = byeMessage;
+
+const startGuessButtonMessage = " 🚀 Find the Take Off 🚀 ";
+exports.startGuessButtonMessage = startGuessButtonMessage;
