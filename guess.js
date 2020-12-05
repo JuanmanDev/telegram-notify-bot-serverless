@@ -1,4 +1,4 @@
-const { Keyboard, Key } = require('telegram-keyboard');
+const { Keyboard, Key } = require("telegram-keyboard");
 
 const {
     guessStartMessage,
@@ -27,7 +27,7 @@ const {
 
 const FIRST_FRAME = 0;
 const LAST_FRAME = 61696;
-const URL_FRAMES = 'https://framex-dev.wadrid.net/api/video/Falcon%20Heavy%20Test%20Flight%20(Hosted%20Webcast)-wbSwFU6tY1c/frame/';
+const URL_FRAMES = "https://framex-dev.wadrid.net/api/video/Falcon%20Heavy%20Test%20Flight%20(Hosted%20Webcast)-wbSwFU6tY1c/frame/";
 
 async function askForFrame({ reply, replyWithPhoto, session }) {
 
@@ -42,9 +42,9 @@ async function askForFrame({ reply, replyWithPhoto, session }) {
     }
     const keyboard = Keyboard.make([
         [
-            Key.callback(' ⏪ ', CALLBACK_TYPE_BEFORE_ACTION),
-            Key.callback(' ☑ ', CALLBACK_TYPE_SELECT_ACTION),
-            Key.callback(' ⏩ ', CALLBACK_TYPE_AFTER_ACTION),
+            Key.callback(" ⏪ ", CALLBACK_TYPE_BEFORE_ACTION),
+            Key.callback(" ☑ ", CALLBACK_TYPE_SELECT_ACTION),
+            Key.callback(" ⏩ ", CALLBACK_TYPE_AFTER_ACTION),
         ],
         [
             Key.callback(guessButtonExitMessage, CALLBACK_TYPE_EXIT_ACTION),
@@ -60,7 +60,7 @@ async function askForFrame({ reply, replyWithPhoto, session }) {
 
 exports.connectGuessToBot = function(bot) {
 
-    bot.command('guess', startGuess);
+    bot.command("guess", startGuess);
     bot.action(CALLBACK_TYPE_GUESS_NAME, startGuess);
 
     bot.action(CALLBACK_TYPE_BEFORE_NAME, async (ctx) => {
@@ -88,7 +88,7 @@ exports.connectGuessToBot = function(bot) {
 
     
     bot.action(CALLBACK_TYPE_RESTART_NAME, startGuess);
-}
+};
 
 async function startGuess(ctx) {
     const { reply } = ctx;

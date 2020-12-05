@@ -1,6 +1,6 @@
-const { Telegraf } = require('telegraf');
-const DynamoDBSession = require('telegraf-session-dynamodb');
-const { Keyboard, Key } = require('telegram-keyboard');
+const { Telegraf } = require("telegraf");
+const DynamoDBSession = require("telegraf-session-dynamodb");
+const { Keyboard, Key } = require("telegram-keyboard");
 
 const {
     welcomeMessage,
@@ -47,23 +47,23 @@ bot.help((ctx) => {
     return ctx.replyWithMarkdown(helpMessage);
 });
 
-bot.command('whoami', (ctx) => {
+bot.command("whoami", (ctx) => {
     let userInfo = JSON.stringify(ctx.from);
     let session = JSON.stringify(ctx.session);
     return ctx.reply(`User info: ${userInfo} , Session: ${session}`);
 });
 
-bot.command('ping', (ctx) => {
-    return ctx.replyWithMarkdown('*Pong!*');
+bot.command("ping", (ctx) => {
+    return ctx.replyWithMarkdown("*Pong!*");
 });
 
-bot.command('clean', (ctx) => {
+bot.command("clean", (ctx) => {
     ctx.session = null;
     return ctx.replyWithMarkdown(cleanMessage);
 });
 
 
-bot.on('text', (ctx) => {
+bot.on("text", (ctx) => {
     return ctx.reply(ctx.message.text);
 });
 

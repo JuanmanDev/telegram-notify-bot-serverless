@@ -1,14 +1,14 @@
-const { CallbackData } = require('telegraf-callback-data');
+const { CallbackData } = require("telegraf-callback-data");
 
-const framesCD = new CallbackData('frames', ['type']);
+const framesCD = new CallbackData("frames", ["type"]);
 
-const CALLBACK_TYPE_START   = 'start';
-const CALLBACK_TYPE_GUESS   = 'guess';
-const CALLBACK_TYPE_BEFORE  = 'before';
-const CALLBACK_TYPE_SELECT  = 'this';
-const CALLBACK_TYPE_AFTER   = 'after';
-const CALLBACK_TYPE_EXIT    = 'exit';
-const CALLBACK_TYPE_RESTART = 'restart';
+const CALLBACK_TYPE_START   = "start";
+const CALLBACK_TYPE_GUESS   = "guess";
+const CALLBACK_TYPE_BEFORE  = "before";
+const CALLBACK_TYPE_SELECT  = "this";
+const CALLBACK_TYPE_AFTER   = "after";
+const CALLBACK_TYPE_EXIT    = "exit";
+const CALLBACK_TYPE_RESTART = "restart";
 
 const CALLBACK_TYPE_START_NAME   = framesCD.filter({ type: CALLBACK_TYPE_START   });
 const CALLBACK_TYPE_GUESS_NAME   = framesCD.filter({ type: CALLBACK_TYPE_GUESS   });

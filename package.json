@@ -4,7 +4,8 @@
   "description": "",
   "main": "handler.js",
   "scripts": {
-    "test": "jest --env=node ./test"
+    "test": "jest --env=node ./test",
+    "lint": "eslint"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +18,7 @@
     "uuid": "^8.3.1"
   },
   "devDependencies": {
+    "eslint": "^7.15.0",
     "jest": "^26.0.1",
     "serverless-offline": "^6.4.0",
     "telegram-test-api": "^2.4.2"
