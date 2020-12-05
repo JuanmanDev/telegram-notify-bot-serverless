@@ -12,7 +12,7 @@ module.exports.mainbot = async event => {
   try {
 
     const body = JSON.parse(event.body);
-    console.log(body);
+    console.debug(body);
 
     await bot.handleUpdate(body);
 
@@ -27,7 +27,7 @@ module.exports.mainbot = async event => {
 
   } catch (err) {
 
-    console.log("Error: ", err);
+    console.error(err);
     return {
         statusCode: err.statusCode ? err.statusCode : 500,
         headers: getResponseHeaders(),
@@ -53,7 +53,7 @@ module.exports.setWebhook = async event => {
       };
 
   } catch (err) {
-      console.log("Error: ", err);
+      console.error(err);
       return {
           statusCode: err.statusCode ? err.statusCode : 500,
           headers: getResponseHeaders(),
