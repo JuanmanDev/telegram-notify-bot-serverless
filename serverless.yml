@@ -43,24 +43,21 @@ functions:
           method: post
           cors: true
 
-resources:
-  Resources:
-    TakeoffSpaceXDynamoDbTable:
-      Type: 'AWS::DynamoDB::Table'
-      DeletionPolicy: Retain
-      Properties:
-        AttributeDefinitions:
-          -
-            AttributeName: chatid
-            AttributeType: S
-          -
-            AttributeName: previousSelections
-            AttributeType: S
-        KeySchema:
-          -
-            AttributeName: chatid
-            KeyType: S
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
-        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+# resources:
+#   Resources:
+#     TakeoffSpaceXDynamoDbTable:
+#       Type: 'AWS::DynamoDB::Table'
+#       DeletionPolicy: Retain
+#       Properties:
+#         AttributeDefinitions:
+#           -
+#             AttributeName: chatid
+#             AttributeType: S
+#         KeySchema:
+#           -
+#             AttributeName: chatid
+#             KeyType: HASH
+#         ProvisionedThroughput:
+#           ReadCapacityUnits: 1
+#           WriteCapacityUnits: 1
+#         TableName: ${self:provider.environment.DYNAMODB_TABLE}
