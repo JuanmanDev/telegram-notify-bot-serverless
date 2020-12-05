@@ -2,6 +2,8 @@ const { Telegraf } = require('telegraf');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
+const { createChat } = require('./chats');
+
 const helpMsg = `The bot just repeats anything you say in the chat.
 \n*Command reference:*
     /start - Start bot
@@ -10,6 +12,7 @@ const helpMsg = `The bot just repeats anything you say in the chat.
     /help - Show this help page`;
 
 bot.start((ctx) => {
+    createChat(ctx.chat.id);
     return ctx.reply(`Hello from Lambda, ${ctx.from.first_name ? ctx.from.first_name : 'friend'}! Use /help to view available commands.`);
 });
 
