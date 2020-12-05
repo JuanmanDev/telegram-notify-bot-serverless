@@ -2,10 +2,11 @@
 
 TODOS:
 - Migrate to TypeScript
+- Minify (in relation with TypeScript)
 - Cache conecction to DynamoDB (maybe)
-- Linting
 - Document This
 
+- Linting DONE
 
 ## Basic Proyect Structure:
 
