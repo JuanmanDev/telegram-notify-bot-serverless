@@ -16,8 +16,8 @@ provider:
     BOT_TOKEN: ${file(./serverless.env.yml):TELEGRAM_TOKEN, ''}
 
 functions:
-  hello:
-    handler: handler.hello
+  mainbot:
+    handler: handler.mainbot
     events:
       - http:
           path: webhook

@@ -8,7 +8,7 @@ const getResponseHeaders = () => {
   };
 }
 
-module.exports.hello = async event => {
+module.exports.mainbot = async event => {
   try {
 
     const body = JSON.parse(event.body);
