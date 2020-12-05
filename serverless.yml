@@ -61,3 +61,22 @@ functions:
 #           ReadCapacityUnits: 1
 #           WriteCapacityUnits: 1
 #         TableName: ${self:provider.environment.DYNAMODB_TABLE}
+
+resources:
+  Resources:
+    TakeoffSpaceXDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        AttributeDefinitions:
+          - AttributeName: SessionKey
+            AttributeType: S
+        KeySchema:
+          - AttributeName: SessionKey
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TimeToLiveSpecification:
+          AttributeName: ttl
+          Enabled: true
