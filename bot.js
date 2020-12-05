@@ -1,7 +1,7 @@
 const { Telegraf } = require('telegraf');
 const DynamoDBSession = require('telegraf-session-dynamodb')
 
-const { Keyboard } = require('telegram-keyboard')
+const { Keyboard, Key } = require('telegram-keyboard')
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const dynamoDBSession = new DynamoDBSession({
@@ -43,9 +43,15 @@ bot.command('ping', (ctx) => {
 
 bot.command('guess', async ({ reply, replyWithPhoto }) => {
     const keyboard = Keyboard.make([
-      ['Button 1', 'Button 2'], // First row
-      ['Button 3', 'Button 4'], // Second row
-    ])
+        [
+            Key.callback('⏪', 'action1'),
+            Key.callback(' ☑ ', 'action2'),
+            Key.callback('⏩', 'action3'),
+        ],
+        [
+            Key.callback('Exit', 'exit'),
+        ],
+      ]);
   
     
     await replyWithPhoto('https://framex-dev.wadrid.net/api/video/Falcon%20Heavy%20Test%20Flight%20(Hosted%20Webcast)-wbSwFU6tY1c/frame/1234/', {
