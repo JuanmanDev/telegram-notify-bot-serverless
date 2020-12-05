@@ -3,7 +3,9 @@ const DynamoDBSession = require('telegraf-session-dynamodb')
 
 const { CallbackData } = require('telegraf-callback-data');
 
-const { Keyboard, Key } = require('telegram-keyboard')
+const { Keyboard, Key } = require('telegram-keyboard');
+
+const { welcomeMessage, helpMessage, cleanMessage } = require("./messages");
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -28,23 +30,12 @@ const CALLBACK_TYPE_EXIT   = 'exit';
 
 const framesCD = new CallbackData('frames', ['type']);
 
-
-
-const helpMsg = `The bot just repeats anything you say in the chat.
-\n*Command reference:*
-    /start - Start bot
-    /guess - Start the guess the take off from SpaceX
-    /ping - *Pong!*
-    /whoami - Show information about the current user
-    /clean - Removes all user data
-    /help - Show this help page`;
-
 bot.start((ctx) => {
-    return ctx.reply(`Hello from Lambda, ${ctx.from.first_name ? ctx.from.first_name : 'friend'}! Use /help to view available commands.`);
+    return ctx.reply(welcomeMessage.replace("{{name}}", ctx.from.first_name ? ctx.from.first_name : 'friend'));
 });
 
 bot.help((ctx) => {
-    return ctx.replyWithMarkdown(helpMsg);
+    return ctx.replyWithMarkdown(helpMessage);
 });
 
 bot.command('whoami', (ctx) => {
@@ -59,18 +50,13 @@ bot.command('ping', (ctx) => {
 
 bot.command('clean', (ctx) => {
     ctx.session = null;
-    return ctx.replyWithMarkdown('*Pong!* - All user data cleared');
+    return ctx.replyWithMarkdown(cleanMessage);
 });
-
-
 
 bot.command('guess', async (ctx) => {
     const { reply, replyWithPhoto, session } = ctx;
 
-    await reply(`Welcome to guess the takeoff, every round you will receive a image with a SpaceX takeoff, and you have to reply telling me if the takoff is:
-    ⏪ Before the image
-    ☑ Inside the image
-    ⏩ After the image`);
+    await reply(guessStartMessage);
 
     ctx.session.firstFrame = FIRST_FRAME;
     ctx.session.lastFrame = LAST_FRAME;
@@ -86,7 +72,7 @@ async function askForFrame({ reply, replyWithPhoto, session }) {
         || session.firstFrame > session.currentFrame 
         || session.lastFrame < session.currentFrame 
         ) {
-        reply("You finish, your frame is the: " + session.currentFrame);
+        reply(guessFinishMessage + session.currentFrame);
         replyWithPhoto(URL_FRAMES + session.currentFrame);
         return;
     }
@@ -97,7 +83,7 @@ async function askForFrame({ reply, replyWithPhoto, session }) {
             Key.callback(' ⏩ ',  framesCD.new({ type: CALLBACK_TYPE_AFTER  })),
         ],
         [
-            Key.callback(' EXIT ',  framesCD.new({ type: CALLBACK_TYPE_EXIT  })),
+            Key.callback(guessButtonExitMessage,  framesCD.new({ type: CALLBACK_TYPE_EXIT  })),
         ],
       ]);
       
@@ -124,7 +110,7 @@ bot.action(framesCD.filter({ type: CALLBACK_TYPE_AFTER }), async (ctx) => {
 });
 
 bot.action(framesCD.filter({ type: CALLBACK_TYPE_EXIT }), ({ answerCbQuery }) => {
-    return answerCbQuery('Hello ' + CALLBACK_TYPE_EXIT);
+    // return answerCbQuery('Hello ' + CALLBACK_TYPE_EXIT);
 });
 
 bot.on('text', (ctx) => {
