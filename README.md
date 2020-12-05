@@ -6,7 +6,7 @@ TODOS:
 - Cache conecction to DynamoDB (maybe)
 - Document This (partial done)
 - Manage buttons after find takeoff frame
-
+- Move js files to a src folder
 - Linting DONE
 
 ## Basic Proyect Structure:
