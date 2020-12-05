@@ -1,5 +1,6 @@
 const { CallbackData } = require('telegraf-callback-data');
 
+const framesCD = new CallbackData('frames', ['type']);
 
 const CALLBACK_TYPE_BEFORE = 'before';
 const CALLBACK_TYPE_SELECT = 'this';
