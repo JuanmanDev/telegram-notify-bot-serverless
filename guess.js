@@ -63,7 +63,7 @@ exports.connectGuessToBot = function(bot) {
     });
 
     bot.action(CALLBACK_TYPE_BEFORE_NAME, async (ctx) => {
-        ctx.session.lastFrame = ctx.session.currentFrame;
+        session.firstFrame = session.lastFrame = ctx.session.currentFrame;
         await askForFrame(ctx);
     });
 
