@@ -27,8 +27,11 @@ exports.guessStartMessage = guessStartMessage;
 const guessFinishMessage = "You finish, your frame is the: ";
 exports.guessFinishMessage = guessFinishMessage;
 
-const guessButtonExitMessage = " EXIT ";
+const guessButtonExitMessage = " 🚪 Exit ";
 exports.guessButtonExitMessage = guessButtonExitMessage;
+
+const guessButtonRestartMessage = " 🔄 Restart ";
+exports.guessButtonRestartMessage = guessButtonRestartMessage;
 
 const byeMessage = " Bye! 👋 ";
 exports.byeMessage = byeMessage;

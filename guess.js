@@ -4,6 +4,7 @@ const {
     guessStartMessage,
     guessFinishMessage,
     guessButtonExitMessage,
+    guessButtonRestartMessage,
     byeMessage,
     startGuessButtonMessage,
 } = require("./messages");
@@ -13,10 +14,12 @@ const {
     CALLBACK_TYPE_SELECT_ACTION,
     CALLBACK_TYPE_AFTER_ACTION,
     CALLBACK_TYPE_EXIT_ACTION,
+    CALLBACK_TYPE_RESTART_ACTION,
     CALLBACK_TYPE_BEFORE_NAME,
     CALLBACK_TYPE_SELECT_NAME,
     CALLBACK_TYPE_AFTER_NAME,
     CALLBACK_TYPE_EXIT_NAME,
+    CALLBACK_TYPE_RESTART_NAME,
     CALLBACK_TYPE_GUESS_ACTION,
     CALLBACK_TYPE_GUESS_NAME,
 } = require("./framesCD");
@@ -45,6 +48,7 @@ async function askForFrame({ reply, replyWithPhoto, session }) {
         ],
         [
             Key.callback(guessButtonExitMessage, CALLBACK_TYPE_EXIT_ACTION),
+            Key.callback(guessButtonRestartMessage, CALLBACK_TYPE_RESTART_ACTION),
         ],
     ]);
 
@@ -78,9 +82,12 @@ exports.connectGuessToBot = function(bot) {
         const keyboard = Keyboard.make([Key.callback(startGuessButtonMessage, CALLBACK_TYPE_GUESS_ACTION)]);
         
         await ctx.reply(byeMessage, {
-            ...keyboard.reply(),
+            ...keyboard.inline(),
         });
     });
+
+    
+    bot.action(CALLBACK_TYPE_RESTART_NAME, startGuess);
 }
 
 async function startGuess(ctx) {
