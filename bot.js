@@ -34,7 +34,6 @@ connectGuessToBot(bot, startMessageAction);
 
 bot.start(startMessageAction);
 bot.action(CALLBACK_TYPE_START_NAME, startMessageAction);
-
 async function startMessageAction(ctx) {
     const keyboard = Keyboard.make([Key.callback(startGuessButtonMessage, CALLBACK_TYPE_GUESS_ACTION)]);
     
@@ -61,7 +60,6 @@ bot.command("clean", (ctx) => {
     ctx.session = null;
     return ctx.replyWithMarkdown(cleanMessage);
 });
-
 
 bot.on("text", (ctx) => {
     return ctx.reply(ctx.message.text);

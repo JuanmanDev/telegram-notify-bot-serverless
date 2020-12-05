@@ -29,6 +29,9 @@ const FIRST_FRAME = 0;
 const LAST_FRAME = 61696;
 const URL_FRAMES = "https://framex-dev.wadrid.net/api/video/Falcon%20Heavy%20Test%20Flight%20(Hosted%20Webcast)-wbSwFU6tY1c/frame/";
 
+
+// Sends to the user on a context the equestion to check where is the takeoff (before, now, after)
+// Also ends the search if there is no more frames to check.
 async function askForFrame({ reply, replyWithPhoto, session }) {
 
     session.currentFrame = Math.trunc((session.lastFrame - session.firstFrame) / 2) + session.firstFrame;
@@ -58,6 +61,7 @@ async function askForFrame({ reply, replyWithPhoto, session }) {
     });
 }
 
+// Connects Telegraf commands to Guess main logic
 exports.connectGuessToBot = function(bot) {
 
     bot.command("guess", startGuess);
